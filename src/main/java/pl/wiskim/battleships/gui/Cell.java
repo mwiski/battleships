@@ -2,12 +2,13 @@ package pl.wiskim.battleships.gui;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
-import java.util.Objects;
+import pl.wiskim.battleships.model.Ship;
 
 public class Cell extends Rectangle {
 
-    private int x, y;
+    public int x, y;
+    private Ship ship = null;
+    private boolean wasShot = false;
 
     public Cell(int x, int y) {
         super(30, 30);
@@ -17,17 +18,19 @@ public class Cell extends Rectangle {
         setStroke(Color.BLACK);
     }
 
-        @Override
-        public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Cell)) return false;
-        Cell cell = (Cell) o;
-        return x == cell.x &&
-                y == cell.y;
+    public boolean wasShot() {
+        return wasShot;
     }
 
-        @Override
-        public int hashCode() {
-        return Objects.hash(x, y);
+    public void setWasShot(boolean wasShot) {
+        this.wasShot = wasShot;
+    }
+
+    public Ship getShip() {
+        return ship;
+    }
+
+    public void setShip(Ship ship) {
+        this.ship = ship;
     }
 }
