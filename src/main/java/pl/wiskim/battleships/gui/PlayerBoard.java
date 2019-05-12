@@ -2,7 +2,6 @@ package pl.wiskim.battleships.gui;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.Parent;
@@ -30,19 +29,6 @@ public class PlayerBoard extends Parent {
             rows.getChildren().add(row);
         }
         getChildren().add(rows);
-    }
-
-    public List<Ship> createShips(MouseEvent event) {
-        List<Ship> ships = new ArrayList<>();
-        ships.add(new Ship(5, event.getButton() == MouseButton.PRIMARY));
-        ships.add(new Ship(4, event.getButton() == MouseButton.PRIMARY));
-        ships.add(new Ship(3, event.getButton() == MouseButton.PRIMARY));
-        ships.add(new Ship(3, event.getButton() == MouseButton.PRIMARY));
-        ships.add(new Ship(2, event.getButton() == MouseButton.PRIMARY));
-        ships.add(new Ship(2, event.getButton() == MouseButton.PRIMARY));
-        ships.add(new Ship(1, event.getButton() == MouseButton.PRIMARY));
-        ships.add(new Ship(1, event.getButton() == MouseButton.PRIMARY));
-        return ships;
     }
 
     public Cell getCell(int x, int y) {

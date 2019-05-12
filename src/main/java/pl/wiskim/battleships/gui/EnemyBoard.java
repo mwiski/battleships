@@ -5,7 +5,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import pl.wiskim.battleships.model.Ship;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,19 +26,6 @@ public class EnemyBoard extends Parent {
             rows.getChildren().add(row);
         }
         getChildren().add(rows);
-    }
-
-    public List<Ship> enemyShips() {
-        List<Ship> ships = new ArrayList<>();
-        ships.add(new Ship(5, Math.random() < 0.5));
-        ships.add(new Ship(4, Math.random() < 0.5));
-        ships.add(new Ship(3, Math.random() < 0.5));
-        ships.add(new Ship(3, Math.random() < 0.5));
-        ships.add(new Ship(2, Math.random() < 0.5));
-        ships.add(new Ship(2, Math.random() < 0.5));
-        ships.add(new Ship(1, Math.random() < 0.5));
-        ships.add(new Ship(1, Math.random() < 0.5));
-        return ships;
     }
 
     public Cell getCell(int x, int y) {
