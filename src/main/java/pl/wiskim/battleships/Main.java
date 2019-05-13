@@ -8,7 +8,7 @@ import pl.wiskim.battleships.gui.UserInterface;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
 
         UserInterface gui = new UserInterface();
         Game game = new Game(gui);

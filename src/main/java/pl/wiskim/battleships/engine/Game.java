@@ -6,9 +6,8 @@ import pl.wiskim.battleships.gui.UserInterface;
 
 public class Game {
 
-    private static String title = "Battleships";
-
-    private UserInterface gui;
+    private static final String TITLE = "Battleships";
+    private final UserInterface gui;
 
     public Game(UserInterface gui) {
         this.gui = gui;
@@ -18,7 +17,7 @@ public class Game {
         return gui.setStartScene(primaryStage);
     }
 
-    public static String getTitle() {
-        return title;
+    public String getTitle() {
+        return TITLE;
     }
 }

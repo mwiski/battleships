@@ -2,14 +2,12 @@ package pl.wiskim.battleships.model;
 
 public class Ship {
 
-    private int health;
     private int size;
-    private boolean vertical = true;
+    private boolean vertical;
 
     public Ship(int size, boolean vertical) {
         this.vertical = vertical;
         this.size = size;
-        health = size;
     }
 
     public int getSize() {
@@ -20,11 +18,11 @@ public class Ship {
         return vertical;
     }
 
-    public int getHealth() {
-        return health;
+    public void reduceSize() {
+        size--;
     }
 
-    public void reduceHealth() {
-        health--;
+    public boolean isNotAlive() {
+        return size == 0;
     }
 }

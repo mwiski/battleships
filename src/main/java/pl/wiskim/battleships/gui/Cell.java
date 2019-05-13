@@ -6,8 +6,8 @@ import pl.wiskim.battleships.model.Ship;
 
 public class Cell extends Rectangle {
 
-    public int x, y;
-    private Ship ship = null;
+    private int x, y;
+    private Ship ship;
     private boolean wasShot = false;
 
     public Cell(int x, int y) {
@@ -32,5 +32,13 @@ public class Cell extends Rectangle {
 
     public void setShip(Ship ship) {
         this.ship = ship;
+    }
+
+    public int getXValue() {
+        return x;
+    }
+
+    public int getYValue() {
+        return y;
     }
 }
