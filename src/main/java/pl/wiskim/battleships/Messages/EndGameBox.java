@@ -11,31 +11,40 @@ import pl.wiskim.battleships.gui.UserInterface;
 
 public class EndGameBox extends Box {
 
-    public static void display(String title, String message) {
-        Stage primaryStage = new Stage();
+    public static void display(String title, String message, Stage primaryStage, UserInterface gui) {
+        Stage stage = new Stage();
 
-        UserInterface gui = new UserInterface();
-
-        primaryStage.initModality(Modality.APPLICATION_MODAL);
-        primaryStage.setTitle(title);
-        primaryStage.setMinWidth(250);
-        primaryStage.setMinHeight(250);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle(title);
+        stage.setMinWidth(300);
+        stage.setMinHeight(250);
 
         Label label = new Label();
         label.setText(message);
-        Button playAgain = new Button("Play again");
-        playAgain.setOnAction(e -> primaryStage.setScene(gui.setScenePlay()));
+        Button restart = new Button("Restart");
+        restart.setOnAction(e -> {
+            gui.restart();
+            primaryStage.setScene(gui.setScenePlay());
+            stage.close();
+        });
         Button returnToMenu = new Button("Return to main menu");
-        returnToMenu.setOnAction(e -> primaryStage.setScene(gui.setStartScene(primaryStage)));
-        Button closeButton = new Button("Close this window");
-        closeButton.setOnAction(e -> primaryStage.close());
+        returnToMenu.setOnAction(e -> {
+            UserInterface userInterface = new UserInterface();
+            primaryStage.setScene(userInterface.setStartScene(primaryStage));
+            stage.close();
+        });
+        Button closeButton = new Button("Close game");
+        closeButton.setOnAction(e -> {
+            stage.close();
+            primaryStage.close();
+        });
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(label, playAgain, returnToMenu, closeButton);
+        layout.getChildren().addAll(label, restart, returnToMenu, closeButton);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
-        primaryStage.setScene(scene);
-        primaryStage.showAndWait();
+        stage.setScene(scene);
+        stage.showAndWait();
     }
 }

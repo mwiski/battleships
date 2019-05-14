@@ -13,17 +13,21 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import pl.wiskim.battleships.Main;
+import pl.wiskim.battleships.Messages.AlertBox;
 import pl.wiskim.battleships.Messages.EndGameBox;
 import pl.wiskim.battleships.engine.GameLevelType;
 import pl.wiskim.battleships.model.Ship;
 import pl.wiskim.battleships.model.ShipType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class UserInterface {
 
     private static final int MAIN_FONT_SIZE = 48;
-    private static final int TEXT_FONT_SIZE = 24;
+    private static final int TEXT_FONT_SIZE = 18;
     private static final String MAIN_FONT_TYPE = "Arial";
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 600;
@@ -31,6 +35,9 @@ public class UserInterface {
     private GridPane root;
     private Label shipLabel;
     private Label instruction;
+    private Label score;
+    private int playerScore = 0;
+    private int computerScore = 0;
     private PlayerBoard playerBoard;
     private EnemyBoard enemyBoard;
     private boolean isEnemyBoardActive = false;
@@ -39,6 +46,9 @@ public class UserInterface {
     private Random random = new Random();
     private ShipType shipType = ShipType.FIVE_MAST;
     private GameLevelType gameLevelType;
+    private boolean shotContinue;
+    private List<Cell> shotContinueCells;
+    private int currentShot = 0;
 
     public UserInterface() {
         root = new GridPane();
@@ -64,10 +74,17 @@ public class UserInterface {
         instruction.setStyle("-fx-background-color:POWDERBLUE");
         instruction.setPadding(new Insets(5, 5, 5, 5));
 
-        GridPane.setConstraints(instruction, 1, 0);
-        GridPane.setConstraints(shipLabel, 1, 1);
-        GridPane.setConstraints(hbox, 1, 2);
-        root.getChildren().addAll(instruction, shipLabel, hbox);
+        score = new Label("Score\nPlayer: " + playerScore + "\nComputer: " + computerScore);
+        score.setFont(new Font(MAIN_FONT_TYPE, TEXT_FONT_SIZE));
+        score.setTextFill(Color.web("#9C3A25"));
+        score.setStyle("-fx-background-color:POWDERBLUE");
+        score.setPadding(new Insets(5, 5, 5, 5));
+
+        GridPane.setConstraints(instruction, 0, 0);
+        GridPane.setConstraints(score, 1, 0);
+        GridPane.setConstraints(shipLabel, 0, 1);
+        GridPane.setConstraints(hbox, 0, 2);
+        root.getChildren().addAll(instruction, score, shipLabel, hbox);
     }
 
     private Background createBackground(String url) {
@@ -98,9 +115,9 @@ public class UserInterface {
             primaryStage.setScene(setScenePlay());
         });
 
-        Button hardLevel = new Button("HARD");
+        Button hardLevel = new Button("ADVANCED");
         hardLevel.setOnAction(e -> {
-            gameLevelType = GameLevelType.HARD;
+            gameLevelType = GameLevelType.ADVANCED;
             primaryStage.setScene(setScenePlay());
         });
 
@@ -272,6 +289,7 @@ public class UserInterface {
                     break;
             }
         }
+        shotContinueCells = new ArrayList<>();
         isEnemyBoardActive = true;
     }
 
@@ -287,8 +305,8 @@ public class UserInterface {
 
         if (enemyBoard.getShipsCount() == 0) {
             System.out.println("YOU WIN");
-            EndGameBox.display("End game", "Congratulations, you won!\nWhat do you want to do next?");
-            System.exit(0);
+            playerScore++;
+            EndGameBox.display("End game", "Congratulations, you won!\nWhat do you want to do next?", Main.getPrimaryStage(), this);
         }
 
         if (enemyTurn)
@@ -297,37 +315,78 @@ public class UserInterface {
 
     private void enemyMove() {
         while (enemyTurn) {
-            int x = random.nextInt(BOARD_SIZE);
-            int y = random.nextInt(BOARD_SIZE);
-            Cell cell = playerBoard.getCell(x, y);
 
             switch (gameLevelType) {
                 case EASY:
-                if (cell.wasShot())
+                    int x = random.nextInt(BOARD_SIZE);
+                    int y = random.nextInt(BOARD_SIZE);
+                    Cell cell = playerBoard.getCell(x, y);
+
+                    if (cell.wasShot())
                     continue;
 
-                enemyTurn = shoot(cell, playerBoard);
-                break;
+                    enemyTurn = shoot(cell, playerBoard);
+                    break;
 
-                case HARD:
-                if (cell.wasShot())
-                    continue;
+                case ADVANCED:
 
-                Cell[] neighbourCells = playerBoard.getNeighbors(x, y);
-                Cell neighbourCell = neighbourCells[random.nextInt(4)];
+                    if (!shotContinue) {
+                        int a = random.nextInt(BOARD_SIZE);
+                        int b = random.nextInt(BOARD_SIZE);
+                        Cell c = playerBoard.getCell(a, b);
 
-                if (enemyTurn = shoot(cell, playerBoard)) {
-                    if (neighbourCell.getXValue() < BOARD_SIZE && neighbourCell.getYValue() < BOARD_SIZE) {
-                        enemyTurn = shoot(neighbourCell, playerBoard);
+                        if (c.wasShot())
+                            continue;
+
+                        if (enemyTurn = shoot(c, playerBoard)) {
+                            shotContinueCells.add(c);
+                            if (!c.getShip().isNotAlive()) {
+                                shotContinue = true;
+                            } else {
+                                shotContinueCells.clear();
+                            }
+                        }
+                    } else {
+                        Cell c = shotContinueCells.get(currentShot);
+                        Cell[] neighbourCells = playerBoard.getNeighbors(c.getXValue(), c.getYValue());
+                        Cell neighbourCell = neighbourCells[random.nextInt(neighbourCells.length)];
+                        int n = neighbourCells.length;
+
+                        if (n == 4 && neighbourCells[n - 1].wasShot() && neighbourCells[n - 2].wasShot() && neighbourCells[n - 3].wasShot() && neighbourCells[n - 4].wasShot()) {
+                            c = shotContinueCells.get(0);
+                            neighbourCells = playerBoard.getNeighbors(c.getXValue(), c.getYValue());
+                            neighbourCell = neighbourCells[random.nextInt(neighbourCells.length)];
+                        } else if (n == 3 && neighbourCells[n - 1].wasShot() && neighbourCells[n - 2].wasShot() && neighbourCells[n - 3].wasShot()) {
+                            c = shotContinueCells.get(0);
+                            neighbourCells = playerBoard.getNeighbors(c.getXValue(), c.getYValue());
+                            neighbourCell = neighbourCells[random.nextInt(neighbourCells.length)];
+                        } else if (n == 2 && neighbourCells[n - 1].wasShot() && neighbourCells[n - 2].wasShot()) {
+                            c = shotContinueCells.get(0);
+                            neighbourCells = playerBoard.getNeighbors(c.getXValue(), c.getYValue());
+                            neighbourCell = neighbourCells[random.nextInt(neighbourCells.length)];
+                        }
+
+                        if (neighbourCell.wasShot())
+                            continue;
+
+                        if (enemyTurn = shoot(neighbourCell, playerBoard)) {
+                            shotContinueCells.add(neighbourCell);
+                            currentShot++;
+
+                            if (neighbourCell.getShip().isNotAlive()) {
+                                shotContinue = false;
+                                currentShot = 0;
+                                shotContinueCells.clear();
+                            }
+                        }
                     }
-                }
-                break;
+                    break;
             }
 
             if (playerBoard.getShipsCount() == 0) {
                 System.out.println("YOU LOSE");
-                EndGameBox.display("Game over", "Oh no! You have lost!\nWhat do you want to do next?");
-                System.exit(0);
+                computerScore++;
+                EndGameBox.display("Game over", "Oh no! You have lost!\nWhat do you want to do next?", Main.getPrimaryStage(), this);
             }
         }
     }
@@ -341,6 +400,7 @@ public class UserInterface {
             cell.setFill(Color.RED);
             if (cell.getShip().isNotAlive()) {
                 reduceShips(board);
+                AlertBox.display("Ship has sink", "Hit and sink!");
             }
             return true;
         }
@@ -353,5 +413,36 @@ public class UserInterface {
 
     private void reduceShips(Board board) {
         board.reduceShips();
+    }
+
+    public void restart() {
+        isEnemyBoardActive = false;
+        isPlayerBoardActive = true;
+        enemyTurn = false;
+        shipType = ShipType.FIVE_MAST;
+        shotContinueCells.clear();
+
+        root = new GridPane();
+        root.setPadding(new Insets(10, 10, 10, 10));
+        root.setHgap(8);
+        root.setVgap(10);
+        root.setAlignment(Pos.CENTER);
+        root.setBackground(createBackground("file:out/production/resources/graphics/ocean.jpg"));
+
+        playerBoard = new PlayerBoard(BOARD_SIZE, e -> placeShips(e));
+        enemyBoard = new EnemyBoard(BOARD_SIZE, e -> shootEnemy(e));
+        HBox hbox = new HBox(50, playerBoard, enemyBoard);
+
+        score = new Label("Score\nPlayer: " + playerScore + "\nComputer: " + computerScore);
+        score.setFont(new Font(MAIN_FONT_TYPE, TEXT_FONT_SIZE));
+        score.setTextFill(Color.web("#9C3A25"));
+        score.setStyle("-fx-background-color:POWDERBLUE");
+        score.setPadding(new Insets(5, 5, 5, 5));
+
+        GridPane.setConstraints(instruction, 0, 0);
+        GridPane.setConstraints(score, 1, 0);
+        GridPane.setConstraints(shipLabel, 0, 1);
+        GridPane.setConstraints(hbox, 0, 2);
+        root.getChildren().addAll(instruction, score, shipLabel, hbox);
     }
 }
