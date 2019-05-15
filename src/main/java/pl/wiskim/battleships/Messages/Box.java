@@ -1,34 +1,31 @@
 package pl.wiskim.battleships.Messages;
 
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import pl.wiskim.battleships.gui.UserInterface;
 
 public abstract class Box {
 
-    public static void display(String title, String message) {
-        Stage stage = new Stage();
+    protected Stage stage;
+    protected Label label;
+    protected VBox layout;
 
+    public void init(String title, String message) {
+        stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(title);
         stage.setMinWidth(350);
         stage.setMinHeight(250);
 
-        Label label = new Label();
+        label = new Label();
         label.setText(message);
-        Button closeButton = new Button("Close this window");
-        closeButton.setOnAction(e -> stage.close());
 
-        VBox layout = new VBox(10);
-        layout.getChildren().addAll(label, closeButton);
+        layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
-
-        Scene scene = new Scene(layout);
-        stage.setScene(scene);
-        stage.showAndWait();
     }
+
+    public abstract void renderContent(Stage primaryStage, UserInterface gui);
 }

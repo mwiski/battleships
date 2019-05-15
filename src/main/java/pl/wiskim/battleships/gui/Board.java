@@ -35,25 +35,7 @@ public abstract class Board extends Parent {
         return (Cell)((HBox)rows.getChildren().get(y)).getChildren().get(x);
     }
 
-    public boolean placeShip(Ship ship, int x, int y) {
-        if (canPlaceShip(ship, x, y)) {
-            int length = ship.getSize();
-
-            if (ship.isVertical()) {
-                for (int i = y; i < y + length; i++) {
-                    Cell cell = getCell(x, i);
-                    cell.setShip(ship);
-                }
-            } else {
-                for (int i = x; i < x + length; i++) {
-                    Cell cell = getCell(i, y);
-                    cell.setShip(ship);
-                }
-            }
-            return true;
-        }
-        return false;
-    }
+    public abstract boolean placeShip(Ship ship, int x, int y);
 
     public Cell[] getNeighbors(int x, int y) {
         Point2D[] points = new Point2D[] {

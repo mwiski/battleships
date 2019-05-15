@@ -19,7 +19,7 @@ import pl.wiskim.battleships.Messages.EndGameBox;
 import pl.wiskim.battleships.engine.GameLevelType;
 import pl.wiskim.battleships.model.Ship;
 import pl.wiskim.battleships.model.ShipType;
-
+import pl.wiskim.battleships.model.Ships;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,9 +42,9 @@ public class UserInterface {
     private EnemyBoard enemyBoard;
     private boolean isEnemyBoardActive = false;
     private boolean isPlayerBoardActive = true;
+    private int shipCounter = 0;
     private boolean enemyTurn = false;
     private Random random = new Random();
-    private ShipType shipType = ShipType.FIVE_MAST;
     private GameLevelType gameLevelType;
     private boolean shotContinue;
     private List<Cell> shotContinueCells;
@@ -141,63 +141,18 @@ public class UserInterface {
             return;
 
         Cell cell = (Cell) event.getSource();
-        switch (shipType) {
-            case FIVE_MAST:
-                if (playerBoard.placeShip(new Ship(ShipType.FIVE_MAST.getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
-                    isPlayerBoardActive = false;
-                    shipType = ShipType.FOUR_MAST;
-                    setShipLabel();
-                }
-                break;
-            case FOUR_MAST:
-                if (playerBoard.placeShip(new Ship(ShipType.FOUR_MAST.getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
-                    isPlayerBoardActive = false;
-                    shipType = ShipType.FIRST_THREE_MAST;
-                    setShipLabel();
-                }
-                break;
-            case FIRST_THREE_MAST:
-                if (playerBoard.placeShip(new Ship(ShipType.FIRST_THREE_MAST.getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
-                    isPlayerBoardActive = false;
-                    shipType = ShipType.SECOND_THREE_MAST;
-                    setShipLabel();
-                }
-                break;
-            case SECOND_THREE_MAST:
-                if (playerBoard.placeShip(new Ship(ShipType.SECOND_THREE_MAST.getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
-                    isPlayerBoardActive = false;
-                    shipType = ShipType.FIRST_TWO_MAST;
-                    setShipLabel();
-                }
-                break;
-            case FIRST_TWO_MAST:
-                if (playerBoard.placeShip(new Ship(ShipType.FIRST_TWO_MAST.getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
-                    isPlayerBoardActive = false;
-                    shipType = ShipType.SECOND_TWO_MAST;
-                    setShipLabel();
-                }
-                break;
-            case SECOND_TWO_MAST:
-                if (playerBoard.placeShip(new Ship(ShipType.SECOND_TWO_MAST.getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
-                    isPlayerBoardActive = false;
-                    shipType = ShipType.FIRST_ONE_MAST;
-                    setShipLabel();
-                }
-                break;
-            case FIRST_ONE_MAST:
-                if (playerBoard.placeShip(new Ship(ShipType.FIRST_ONE_MAST.getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
-                    isPlayerBoardActive = false;
-                    shipType = ShipType.SECOND_ONE_MAST;
-                    setShipLabel();
-                    break;
-                }
-            case SECOND_ONE_MAST:
-                if (playerBoard.placeShip(new Ship(ShipType.SECOND_ONE_MAST.getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
-                    isPlayerBoardActive = false;
-                    root.getChildren().removeAll(shipLabel, instruction);
-                    enemyPlaceShips();
-                }
-                break;
+        Ships ships = new Ships();
+        List<ShipType> shipTypeList = ships.init();
+
+        if (playerBoard.placeShip(new Ship(shipTypeList.get(shipCounter).getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
+            isPlayerBoardActive = false;
+            shipCounter++;
+            setShipLabel();
+
+            if (shipCounter == shipTypeList.size()) {
+                root.getChildren().removeAll(shipLabel, instruction);
+                enemyPlaceShips();
+            }
         }
     }
 
@@ -207,90 +162,33 @@ public class UserInterface {
 
         if (isPlayerBoardActive)
             return;
-        switch (shipType) {
-            case FOUR_MAST:
-                shipLabel.setText("Place your four-mast ship");
-                isPlayerBoardActive = true;
-                break;
-            case FIRST_THREE_MAST:
-                shipLabel.setText("Place your first three-mast ship");
-                isPlayerBoardActive = true;
-                break;
-            case SECOND_THREE_MAST:
-                shipLabel.setText("Place your second three-mast ship");
-                isPlayerBoardActive = true;
-                break;
-            case FIRST_TWO_MAST:
-                shipLabel.setText("Place your first two-mast ship");
-                isPlayerBoardActive = true;
-                break;
-            case SECOND_TWO_MAST:
-                shipLabel.setText("Place your second two-mast ship");
-                isPlayerBoardActive = true;
-                break;
-            case FIRST_ONE_MAST:
-                shipLabel.setText("Place your first one-mast ship");
-                isPlayerBoardActive = true;
-                break;
-            case SECOND_ONE_MAST:
-                shipLabel.setText("Place your second one-mast ship");
-                isPlayerBoardActive = true;
-                break;
+
+        Ships ships = new Ships();
+        List<String> shipsNames = ships.setShipsNames();
+        if (shipCounter < shipsNames.size()) {
+            shipLabel.setText("Place your " + shipsNames.get(shipCounter) + " ship");
+            isPlayerBoardActive = true;
         }
     }
 
     private void enemyPlaceShips() {
         int n = 0;
 
+        Ships ships = new Ships();
+        List<ShipType> shipTypeList = ships.init();
+
         while (n < enemyBoard.getShipsCount()) {
             int x = random.nextInt(BOARD_SIZE);
             int y = random.nextInt(BOARD_SIZE);
 
-            switch (n) {
-                case 0:
-                    if (enemyBoard.placeShip(new Ship(ShipType.FIVE_MAST.getSize(), Math.random() < 0.5), x, y)) {
-                        n ++;
-                    }
-                    break;
-                case 1:
-                    if (enemyBoard.placeShip(new Ship(ShipType.FOUR_MAST.getSize(), Math.random() < 0.5), x, y)) {
-                        n++;
-                    }
-                    break;
-                case 2:
-                    if (enemyBoard.placeShip(new Ship(ShipType.FIRST_THREE_MAST.getSize(), Math.random() < 0.5), x, y)) {
-                        n++;
-                    }
-                    break;
-                case 3:
-                    if (enemyBoard.placeShip(new Ship(ShipType.SECOND_THREE_MAST.getSize(), Math.random() < 0.5), x, y)) {
-                        n++;
-                    }
-                    break;
-                case 4:
-                    if (enemyBoard.placeShip(new Ship(ShipType.FIRST_TWO_MAST.getSize(), Math.random() < 0.5), x, y)) {
-                        n++;
-                    }
-                    break;
-                case 5:
-                    if (enemyBoard.placeShip(new Ship(ShipType.SECOND_TWO_MAST.getSize(), Math.random() < 0.5), x, y)) {
-                        n++;
-                    }
-                    break;
-                case 6:
-                    if (enemyBoard.placeShip(new Ship(ShipType.FIRST_ONE_MAST.getSize(), Math.random() < 0.5), x, y)) {
-                        n++;
-                    }
-                    break;
-                case 7:
-                    if (enemyBoard.placeShip(new Ship(ShipType.SECOND_ONE_MAST.getSize(), Math.random() < 0.5), x, y)) {
-                        n++;
-                    }
-                    break;
+            if (enemyBoard.placeShip(new Ship(shipTypeList.get(n).getSize(), Math.random() < 0.5), x, y)) {
+                n++;
+
+                if (n == shipTypeList.size())
+                shotContinueCells = new ArrayList<>();
+                isEnemyBoardActive = true;
             }
         }
-        shotContinueCells = new ArrayList<>();
-        isEnemyBoardActive = true;
     }
 
     private void shootEnemy(Event event) {
@@ -306,7 +204,9 @@ public class UserInterface {
         if (enemyBoard.getShipsCount() == 0) {
             System.out.println("YOU WIN");
             playerScore++;
-            EndGameBox.display("End game", "Congratulations, you won!\nWhat do you want to do next?", Main.getPrimaryStage(), this);
+            EndGameBox endGameBox = new EndGameBox();
+            endGameBox.init("End game", "Congratulations, you won!\nWhat do you want to do next?");
+            endGameBox.renderContent(Main.getPrimaryStage(), this);
         }
 
         if (enemyTurn)
@@ -386,7 +286,9 @@ public class UserInterface {
             if (playerBoard.getShipsCount() == 0) {
                 System.out.println("YOU LOSE");
                 computerScore++;
-                EndGameBox.display("Game over", "Oh no! You have lost!\nWhat do you want to do next?", Main.getPrimaryStage(), this);
+                EndGameBox endGameBox = new EndGameBox();
+                endGameBox.init("Game over", "Oh no! You have lost!\nWhat do you want to do next?");
+                endGameBox.renderContent(Main.getPrimaryStage(), this);
             }
         }
     }
@@ -400,7 +302,9 @@ public class UserInterface {
             cell.setFill(Color.RED);
             if (cell.getShip().isNotAlive()) {
                 reduceShips(board);
-                AlertBox.display("Ship has sink", "Hit and sink!");
+                AlertBox alertBox = new AlertBox();
+                alertBox.init("Ship has sink", "Hit and sink!");
+                alertBox.renderContent(Main.getPrimaryStage(), this);
             }
             return true;
         }
@@ -419,7 +323,7 @@ public class UserInterface {
         isEnemyBoardActive = false;
         isPlayerBoardActive = true;
         enemyTurn = false;
-        shipType = ShipType.FIVE_MAST;
+        shipCounter = 0;
         shotContinueCells.clear();
 
         root = new GridPane();
