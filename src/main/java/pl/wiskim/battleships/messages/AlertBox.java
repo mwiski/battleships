@@ -1,4 +1,4 @@
-package pl.wiskim.battleships.Messages;
+package pl.wiskim.battleships.messages;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

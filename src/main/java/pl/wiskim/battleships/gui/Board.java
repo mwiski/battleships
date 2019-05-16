@@ -7,7 +7,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import pl.wiskim.battleships.model.Ship;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public abstract class Board extends Parent {
     private static final int BOARD_SIZE = 12;
     private int shipsCount = 8;
 
-    public Board(int size, EventHandler<? super MouseEvent> handler) {
+    Board(int size, EventHandler<? super MouseEvent> handler) {
         rows = new VBox();
         for (int y = 0; y < size; y++) {
             HBox row = new HBox();
@@ -35,7 +34,21 @@ public abstract class Board extends Parent {
         return (Cell)((HBox)rows.getChildren().get(y)).getChildren().get(x);
     }
 
-    public abstract boolean placeShip(Ship ship, int x, int y);
+    public boolean placeShip(Ship ship, int x, int y) {
+        if (canPlaceShip(ship, x, y)) {
+            int length = ship.getSize();
+
+            if (ship.isVertical()) {
+                place(ship, y, x, 0, 1, length);
+            } else {
+                place(ship, x, y, 1, 0, length);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    abstract void place(Ship ship, int a, int b, int c, int d, int length);
 
     public Cell[] getNeighbors(int x, int y) {
         Point2D[] points = new Point2D[] {
@@ -45,7 +58,7 @@ public abstract class Board extends Parent {
                 new Point2D(x, y + 1)
         };
 
-        List<Cell> neighbors = new ArrayList<Cell>();
+        List<Cell> neighbors = new ArrayList<>();
 
         for (Point2D p : points) {
             if (isValidPoint(p)) {
@@ -55,42 +68,31 @@ public abstract class Board extends Parent {
         return neighbors.toArray(new Cell[0]);
     }
 
-    public boolean canPlaceShip(Ship ship, int x, int y) {
+    private boolean canPlaceShip(Ship ship, int x, int y) {
         int length = ship.getSize();
 
         if (ship.isVertical()) {
-            for (int i = y; i < y + length; i++) {
-                if (!isValidPoint(x, i))
-                    return false;
-
-                Cell cell = getCell(x, i);
-                if (cell.getShip() != null)
-                    return false;
-
-                for (Cell neighbor : getNeighbors(x, i)) {
-                    if (!isValidPoint(x, i))
-                        return false;
-
-                    if (neighbor.getShip() != null)
-                        return false;
-                }
-            }
+            return checkPlacement(y, x, length, 0, 1);
         } else {
-            for (int i = x; i < x + length; i++) {
-                if (!isValidPoint(i, y))
+            return checkPlacement(x, y, length, 1, 0);
+        }
+    }
+
+    private boolean checkPlacement(int a, int b, int length, int c, int d) {
+        for (int i = a; i < a + length; i++) {
+            if (!isValidPoint(i * c + b * d, i * d + b * c))
+                return false;
+
+            Cell cell = getCell(i * c + b * d, i * d + b * c);
+            if (cell.getShip() != null)
+                return false;
+
+            for (Cell neighbor : getNeighbors(i * c + b * d, i * d + b * c)) {
+                if (!isValidPoint(i * c + b * d, i * d + b * c))
                     return false;
 
-                Cell cell = getCell(i, y);
-                if (cell.getShip() != null)
+                if (neighbor.getShip() != null)
                     return false;
-
-                for (Cell neighbor : getNeighbors(i, y)) {
-                    if (!isValidPoint(i, y))
-                        return false;
-
-                    if (neighbor.getShip() != null)
-                        return false;
-                }
             }
         }
         return true;

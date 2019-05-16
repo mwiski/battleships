@@ -7,17 +7,10 @@ import pl.wiskim.battleships.gui.UserInterface;
 
 public class Main extends Application {
 
-    private static Stage primaryStage;
-
-    public static Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
     @Override
     public void start(Stage primaryStage) {
 
-        this.primaryStage = primaryStage;
-        UserInterface gui = new UserInterface();
+        UserInterface gui = new UserInterface(primaryStage);
         Game game = new Game(gui);
 
         primaryStage.setTitle(game.getTitle());

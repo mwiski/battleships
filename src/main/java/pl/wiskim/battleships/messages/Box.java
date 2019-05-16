@@ -1,4 +1,4 @@
-package pl.wiskim.battleships.Messages;
+package pl.wiskim.battleships.messages;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -9,9 +9,9 @@ import pl.wiskim.battleships.gui.UserInterface;
 
 public abstract class Box {
 
-    protected Stage stage;
-    protected Label label;
-    protected VBox layout;
+    Stage stage;
+    Label label;
+    VBox layout;
 
     public void init(String title, String message) {
         stage = new Stage();

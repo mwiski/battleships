@@ -10,7 +10,7 @@ public class Cell extends Rectangle {
     private Ship ship;
     private boolean wasShot = false;
 
-    public Cell(int x, int y) {
+    Cell(int x, int y) {
         super(30, 30);
         this.x = x;
         this.y = y;
@@ -22,15 +22,15 @@ public class Cell extends Rectangle {
         return wasShot;
     }
 
-    public void setWasShot(boolean wasShot) {
-        this.wasShot = wasShot;
+    public void setWasShot() {
+        this.wasShot = true;
     }
 
     public Ship getShip() {
         return ship;
     }
 
-    public void setShip(Ship ship) {
+    void setShip(Ship ship) {
         this.ship = ship;
     }
 

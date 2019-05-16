@@ -1,37 +1,27 @@
 package pl.wiskim.battleships.model;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class Ships {
+public interface Ships {
 
-    public final List<ShipType> init() {
-        List<ShipType> ships = new ArrayList<>();
+    List<ShipType> SHIPS = Arrays.asList(
+            ShipType.FIVE_MAST,
+            ShipType.FOUR_MAST,
+            ShipType.THREE_MAST,
+            ShipType.THREE_MAST,
+            ShipType.TWO_MAST,
+            ShipType.TWO_MAST,
+            ShipType.ONE_MAST,
+            ShipType.ONE_MAST);
 
-        ships.add(ShipType.FIVE_MAST);
-        ships.add(ShipType.FOUR_MAST);
-        ships.add(ShipType.THREE_MAST);
-        ships.add(ShipType.THREE_MAST);
-        ships.add(ShipType.TWO_MAST);
-        ships.add(ShipType.TWO_MAST);
-        ships.add(ShipType.ONE_MAST);
-        ships.add(ShipType.ONE_MAST);
-
-        return ships;
-    }
-
-    public final List<String> setShipsNames() {
-        List<String> shipsNames = new ArrayList<>();
-
-        shipsNames.add("five-mast");
-        shipsNames.add("four-mast");
-        shipsNames.add("first three-mast");
-        shipsNames.add("second three-mast");
-        shipsNames.add("first two-mast");
-        shipsNames.add("second two-mast");
-        shipsNames.add("first one-mast");
-        shipsNames.add("second one-mast");
-
-        return shipsNames;
-    }
+    List<String> SHIP_NAMES = Arrays.asList(
+            "five-mast",
+            "four-mast",
+            "first three-mast",
+            "second three-mast",
+            "first two-mast",
+            "second two-mast",
+            "first one-mast",
+            "second one-mast");
 }

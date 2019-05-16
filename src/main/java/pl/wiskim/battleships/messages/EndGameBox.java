@@ -1,4 +1,4 @@
-package pl.wiskim.battleships.Messages;
+package pl.wiskim.battleships.messages;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,7 +18,7 @@ public class EndGameBox extends Box {
         });
         Button returnToMenu = new Button("Return to main menu");
         returnToMenu.setOnAction(e -> {
-            UserInterface userInterface = new UserInterface();
+            UserInterface userInterface = new UserInterface(primaryStage);
             primaryStage.setScene(userInterface.setStartScene(primaryStage));
             stage.close();
         });
