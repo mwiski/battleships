@@ -23,7 +23,7 @@ public class Cell extends Rectangle {
     }
 
     public void setWasShot() {
-        this.wasShot = true;
+        wasShot = true;
     }
 
     public Ship getShip() {

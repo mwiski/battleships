@@ -7,6 +7,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import pl.wiskim.battleships.model.Ship;
+import pl.wiskim.battleships.model.Ships;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public abstract class Board extends Parent {
 
     private VBox rows;
     private static final int BOARD_SIZE = 12;
-    private int shipsCount = 8;
+    private int shipsCount = Ships.SHIPS.size();
 
     Board(int size, EventHandler<? super MouseEvent> handler) {
         rows = new VBox();

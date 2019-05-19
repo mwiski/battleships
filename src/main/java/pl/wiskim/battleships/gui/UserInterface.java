@@ -31,12 +31,12 @@ public class UserInterface {
     private Label instruction;
     private int playerScore = 0;
     private int computerScore = 0;
-    private int shipCounter = 0;
     private PlayerBoard playerBoard;
     private EnemyBoard enemyBoard;
     private boolean isEnemyBoardActive = false;
     private boolean isPlayerBoardActive = true;
     private EnemyStrategy enemyStrategy;
+    private PlayerStrategy playerStrategy;
     private GameLevelType gameLevelType;
     private Stage primaryStage;
 
@@ -55,7 +55,7 @@ public class UserInterface {
         root.setAlignment(Pos.CENTER);
         root.setBackground(createBackground("file:out/production/resources/graphics/ocean.jpg"));
 
-        PlayerStrategy playerStrategy = new PlayerStrategy(this);
+        playerStrategy = new PlayerStrategy(this);
         enemyStrategy = new EnemyStrategy(this);
         playerBoard = new PlayerBoard(BOARD_SIZE, playerStrategy::placeShips);
         enemyBoard = new EnemyBoard(BOARD_SIZE, playerStrategy::move);
@@ -126,15 +126,14 @@ public class UserInterface {
             return;
 
         List<String> shipsNames = Ships.SHIP_NAMES;
-        if (shipCounter < shipsNames.size()) {
-            getShipLabel().setText("Place your " + shipsNames.get(shipCounter) + " ship");
+        if (playerStrategy.getShipCounter() < shipsNames.size()) {
+            getShipLabel().setText("Place your " + shipsNames.get(playerStrategy.getShipCounter()) + " ship");
             setPlayerBoardActive(true);
         }
     }
     public void restart() {
         isEnemyBoardActive = false;
         isPlayerBoardActive = true;
-        shipCounter = 0;
 
         setRoot();
     }
@@ -197,13 +196,5 @@ public class UserInterface {
 
     public void incComputerScore() {
         computerScore++;
-    }
-
-    public int getShipCounter() {
-        return shipCounter;
-    }
-
-    public void incShipCounter() {
-        shipCounter++;
     }
 }

@@ -14,6 +14,7 @@ import java.util.List;
 public class PlayerStrategy implements Strategy {
 
     private UserInterface gui;
+    private int shipCounter = 0;
 
     public PlayerStrategy(UserInterface gui) {
         this.gui = gui;
@@ -29,12 +30,12 @@ public class PlayerStrategy implements Strategy {
         Cell cell = (Cell) event.getSource();
         List<ShipType> shipTypeList = Ships.SHIPS;
 
-        if (gui.getPlayerBoard().placeShip(new Ship(shipTypeList.get(gui.getShipCounter()).getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
+        if (gui.getPlayerBoard().placeShip(new Ship(shipTypeList.get(shipCounter).getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
             gui.setPlayerBoardActive(false);
-            gui.incShipCounter();
+            shipCounter++;
             gui.setShipLabel();
 
-            if (gui.getShipCounter() == shipTypeList.size()) {
+            if (shipCounter == shipTypeList.size()) {
                 gui.getRoot().getChildren().removeAll(gui.getShipLabel(), gui.getInstruction());
                 gui.setEnemyBoardActive(true);
                 gui.setPlayerBoardActive(false);
@@ -90,5 +91,9 @@ public class PlayerStrategy implements Strategy {
 
     public void reduceShips(Board board) {
         board.reduceShips();
+    }
+
+    public int getShipCounter() {
+        return shipCounter;
     }
 }

@@ -24,7 +24,7 @@ public class EnemyStrategy implements Strategy {
         this.gui = gui;
     }
 
-    public void placeShips() {
+    void placeShips() {
         int n = 0;
 
         List<ShipType> shipTypeList = Ships.SHIPS;
@@ -43,7 +43,7 @@ public class EnemyStrategy implements Strategy {
         }
     }
 
-    public void move() {
+    void move() {
         while (enemyTurn) {
 
             switch (gui.getGameLevelType()) {
@@ -114,6 +114,7 @@ public class EnemyStrategy implements Strategy {
             }
 
             if (gui.getPlayerBoard().getShipsCount() == 0) {
+                enemyTurn = false;
                 System.out.println("YOU LOSE");
                 gui.incComputerScore();
                 EndGameBox endGameBox = new EndGameBox();
@@ -149,11 +150,11 @@ public class EnemyStrategy implements Strategy {
         board.reduceShips();
     }
 
-    public boolean isEnemyTurn() {
+    boolean isEnemyTurn() {
         return enemyTurn;
     }
 
-    public void setEnemyTurn(boolean enemyTurn) {
+    void setEnemyTurn(boolean enemyTurn) {
         this.enemyTurn = enemyTurn;
     }
 }

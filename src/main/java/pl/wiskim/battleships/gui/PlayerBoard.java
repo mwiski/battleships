@@ -8,7 +8,6 @@ import pl.wiskim.battleships.model.Ship;
 public class PlayerBoard extends Board {
 
     private Color shipFillColor = Color.GREEN;
-    private Color shipStrokeColor = Color.BLACK;
 
     PlayerBoard(int size, EventHandler<? super MouseEvent> handler) {
         super(size, handler);
@@ -20,7 +19,6 @@ public class PlayerBoard extends Board {
             Cell cell = getCell(i * c + b * d, i * d + b * c);
             cell.setShip(ship);
             cell.setFill(shipFillColor);
-            cell.setStroke(shipStrokeColor);
         }
     }
 }
