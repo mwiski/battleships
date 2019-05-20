@@ -1,8 +1,6 @@
 package pl.wiskim.battleships.strategy;
 
-import javafx.scene.paint.Color;
 import pl.wiskim.battleships.gui.*;
-import pl.wiskim.battleships.messages.AlertBox;
 import pl.wiskim.battleships.messages.EndGameBox;
 import pl.wiskim.battleships.model.Ship;
 import pl.wiskim.battleships.model.ShipType;
@@ -11,17 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class EnemyStrategy implements Strategy {
+public class EnemyStrategy extends Strategy {
 
     private boolean enemyTurn = false;
     private Random random = new Random();
     private boolean shotContinue;
     private List<Cell> shotContinueCells;
     private int currentShot = 0;
-    private UserInterface gui;
 
     public EnemyStrategy(UserInterface gui) {
-        this.gui = gui;
+        super(gui);
     }
 
     void placeShips() {
@@ -55,7 +52,7 @@ public class EnemyStrategy implements Strategy {
                     if (cell.wasShot())
                         continue;
 
-                    enemyTurn = shoot(cell, gui.getPlayerBoard());
+                    enemyTurn = shoot(cell, gui.getPlayerBoard(), gui);
                     break;
 
                 case ADVANCED:
@@ -68,7 +65,7 @@ public class EnemyStrategy implements Strategy {
                         if (c.wasShot())
                             continue;
 
-                        if (enemyTurn = shoot(c, gui.getPlayerBoard())) {
+                        if (enemyTurn = shoot(c, gui.getPlayerBoard(), gui)) {
                             shotContinueCells.add(c);
                             if (!c.getShip().isNotAlive()) {
                                 shotContinue = true;
@@ -99,7 +96,7 @@ public class EnemyStrategy implements Strategy {
                         if (neighbourCell.wasShot())
                             continue;
 
-                        if (enemyTurn = shoot(neighbourCell, gui.getPlayerBoard())) {
+                        if (enemyTurn = shoot(neighbourCell, gui.getPlayerBoard(), gui)) {
                             shotContinueCells.add(neighbourCell);
                             currentShot++;
 
@@ -122,32 +119,6 @@ public class EnemyStrategy implements Strategy {
                 endGameBox.renderContent(gui.getPrimaryStage(), gui);
             }
         }
-    }
-
-    public boolean shoot(Cell cell, Board board) {
-        cell.setWasShot();
-        cell.setFill(Color.WHITE);
-
-        if (cell.getShip() != null) {
-            hit(cell.getShip());
-            cell.setFill(Color.RED);
-            if (cell.getShip().isNotAlive()) {
-                reduceShips(board);
-                AlertBox alertBox = new AlertBox();
-                alertBox.init("Ship has sink", "Hit and sink!");
-                alertBox.renderContent(gui.getPrimaryStage(), gui);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public void hit(Ship ship) {
-        ship.reduceSize();
-    }
-
-    public void reduceShips(Board board) {
-        board.reduceShips();
     }
 
     boolean isEnemyTurn() {

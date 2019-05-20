@@ -2,22 +2,19 @@ package pl.wiskim.battleships.strategy;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import pl.wiskim.battleships.gui.*;
-import pl.wiskim.battleships.messages.AlertBox;
 import pl.wiskim.battleships.messages.EndGameBox;
 import pl.wiskim.battleships.model.Ship;
 import pl.wiskim.battleships.model.ShipType;
 import pl.wiskim.battleships.model.Ships;
 import java.util.List;
 
-public class PlayerStrategy implements Strategy {
+public class PlayerStrategy extends Strategy {
 
-    private UserInterface gui;
     private int shipCounter = 0;
 
     public PlayerStrategy(UserInterface gui) {
-        this.gui = gui;
+        super(gui);
     }
 
     public void placeShips(MouseEvent event) {
@@ -52,7 +49,7 @@ public class PlayerStrategy implements Strategy {
         if (cell.wasShot())
             return;
 
-        gui.getEnemyStrategy().setEnemyTurn(!shoot(cell, gui.getEnemyBoard()));
+        gui.getEnemyStrategy().setEnemyTurn(!shoot(cell, gui.getEnemyBoard(), gui));
 
         if (gui.getEnemyBoard().getShipsCount() == 0) {
             System.out.println("YOU WIN");
@@ -65,32 +62,6 @@ public class PlayerStrategy implements Strategy {
         if (gui.getEnemyStrategy().isEnemyTurn()) {
             gui.getEnemyStrategy().move();
         }
-    }
-
-    public boolean shoot(Cell cell, Board board) {
-        cell.setWasShot();
-        cell.setFill(Color.WHITE);
-
-        if (cell.getShip() != null) {
-            hit(cell.getShip());
-            cell.setFill(Color.RED);
-            if (cell.getShip().isNotAlive()) {
-                reduceShips(board);
-                AlertBox alertBox = new AlertBox();
-                alertBox.init("Ship has sink", "Hit and sink!");
-                alertBox.renderContent(gui.getPrimaryStage(), gui);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public void hit(Ship ship) {
-        ship.reduceSize();
-    }
-
-    public void reduceShips(Board board) {
-        board.reduceShips();
     }
 
     public int getShipCounter() {
