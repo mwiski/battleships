@@ -57,8 +57,14 @@ public class UserInterface {
 
         playerStrategy = new PlayerStrategy(this);
         enemyStrategy = new EnemyStrategy(this);
-        playerBoard = new PlayerBoard(BOARD_SIZE, playerStrategy::placeShips);
-        enemyBoard = new EnemyBoard(BOARD_SIZE, playerStrategy::move);
+        playerBoard = new PlayerBoard(BOARD_SIZE, e -> {
+            playerStrategy.placeShips(e);
+            enemyStrategy.placeShips();
+        });
+        enemyBoard = new EnemyBoard(BOARD_SIZE, e -> {
+            playerStrategy.move(e);
+            enemyStrategy.move();
+        });
 
         HBox hbox = new HBox(50, playerBoard, enemyBoard);
 
@@ -168,6 +174,10 @@ public class UserInterface {
 
     public EnemyStrategy getEnemyStrategy() {
         return enemyStrategy;
+    }
+
+    public PlayerStrategy getPlayerStrategy() {
+        return playerStrategy;
     }
 
     public boolean isEnemyBoardActive() {

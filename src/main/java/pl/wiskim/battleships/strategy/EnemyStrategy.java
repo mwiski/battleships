@@ -21,26 +21,29 @@ public class EnemyStrategy extends Strategy {
         super(gui);
     }
 
-    void placeShips() {
-        int n = 0;
+    public void placeShips() {
+        if (gui.getPlayerStrategy().getShipCounter() == Ships.SHIPS.size()) {
 
-        List<ShipType> shipTypeList = Ships.SHIPS;
+            int n = 0;
 
-        while (n < gui.getEnemyBoard().getShipsCount()) {
-            int x = random.nextInt(UserInterface.getBoardSize());
-            int y = random.nextInt(UserInterface.getBoardSize());
+            List<ShipType> shipTypeList = Ships.SHIPS;
 
-            if (gui.getEnemyBoard().placeShip(new Ship(shipTypeList.get(n).getSize(), Math.random() < 0.5), x, y)) {
-                n++;
+            while (n < gui.getEnemyBoard().getShipsCount()) {
+                int x = random.nextInt(UserInterface.getBoardSize());
+                int y = random.nextInt(UserInterface.getBoardSize());
 
-                if (n == shipTypeList.size()) {
-                    shotContinueCells = new ArrayList<>();
+                if (gui.getEnemyBoard().placeShip(new Ship(shipTypeList.get(n).getSize(), Math.random() < 0.5), x, y)) {
+                    n++;
+
+                    if (n == shipTypeList.size()) {
+                        shotContinueCells = new ArrayList<>();
+                    }
                 }
             }
         }
     }
 
-    void move() {
+    public void move() {
         while (enemyTurn) {
 
             switch (gui.getGameLevelType()) {

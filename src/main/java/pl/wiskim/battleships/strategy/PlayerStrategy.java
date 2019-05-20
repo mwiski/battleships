@@ -36,7 +36,6 @@ public class PlayerStrategy extends Strategy {
                 gui.getRoot().getChildren().removeAll(gui.getShipLabel(), gui.getInstruction());
                 gui.setEnemyBoardActive(true);
                 gui.setPlayerBoardActive(false);
-                gui.getEnemyStrategy().placeShips();
             }
         }
     }
@@ -57,10 +56,6 @@ public class PlayerStrategy extends Strategy {
             EndGameBox endGameBox = new EndGameBox();
             endGameBox.init("End game", "Congratulations, you won!\nWhat do you want to do next?");
             endGameBox.renderContent(gui.getPrimaryStage(), gui);
-        }
-
-        if (gui.getEnemyStrategy().isEnemyTurn()) {
-            gui.getEnemyStrategy().move();
         }
     }
 
