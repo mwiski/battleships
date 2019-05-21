@@ -111,8 +111,11 @@ public class UserInterface {
             primaryStage.setScene(setScenePlay());
         });
 
+        Button exit = new Button("Exit");
+        exit.setOnAction(e -> primaryStage.close());
+
         VBox layout1 = new VBox(20);
-        layout1.getChildren().addAll(mainMenu, level, easyLevel, hardLevel);
+        layout1.getChildren().addAll(mainMenu, level, easyLevel, hardLevel, exit);
         layout1.setAlignment(Pos.CENTER);
         layout1.setBackground(createBackground("file:out/production/resources/graphics/openingBackground.jpg"));
 

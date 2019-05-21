@@ -3,7 +3,6 @@ package pl.wiskim.battleships.strategy;
 import pl.wiskim.battleships.gui.*;
 import pl.wiskim.battleships.messages.EndGameBox;
 import pl.wiskim.battleships.model.Ship;
-import pl.wiskim.battleships.model.ShipType;
 import pl.wiskim.battleships.model.Ships;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,16 +25,15 @@ public class EnemyStrategy extends Strategy {
 
             int n = 0;
 
-            List<ShipType> shipTypeList = Ships.SHIPS;
-
-            while (n < gui.getEnemyBoard().getShipsCount()) {
+            while (n < Ships.SHIPS.size()) {
                 int x = random.nextInt(UserInterface.getBoardSize());
                 int y = random.nextInt(UserInterface.getBoardSize());
 
-                if (gui.getEnemyBoard().placeShip(new Ship(shipTypeList.get(n).getSize(), Math.random() < 0.5), x, y)) {
+                if (gui.getEnemyBoard().placeShip(new Ship(Ships.SHIPS.get(n).getSize(), Math.random() < 0.5), x, y)) {
+                    gui.getEnemyBoard().incShips();
                     n++;
 
-                    if (n == shipTypeList.size()) {
+                    if (n == Ships.SHIPS.size()) {
                         shotContinueCells = new ArrayList<>();
                     }
                 }
@@ -122,10 +120,6 @@ public class EnemyStrategy extends Strategy {
                 endGameBox.renderContent(gui.getPrimaryStage(), gui);
             }
         }
-    }
-
-    boolean isEnemyTurn() {
-        return enemyTurn;
     }
 
     void setEnemyTurn(boolean enemyTurn) {

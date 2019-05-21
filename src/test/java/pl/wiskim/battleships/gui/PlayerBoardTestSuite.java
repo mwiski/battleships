@@ -1,4 +1,5 @@
 package pl.wiskim.battleships.gui;
+
 import javafx.scene.paint.Color;
 import org.junit.*;
 import pl.wiskim.battleships.model.Ship;
@@ -136,7 +137,19 @@ public class PlayerBoardTestSuite {
         PlayerBoard playerBoard = new PlayerBoard(12, e -> System.out.println("test"));
 
         //Then
-        Assert.assertEquals(8, playerBoard.getShipsCount());
+        Assert.assertEquals(0, playerBoard.getShipsCount());
+    }
+
+    @Test
+    public void testIncShips() {
+        //Given
+        PlayerBoard playerBoard = new PlayerBoard(12, e -> System.out.println("test"));
+
+        //When
+        playerBoard.incShips();
+
+        //Then
+        Assert.assertEquals(1, playerBoard.getShipsCount());
     }
 
     @Test
@@ -145,9 +158,11 @@ public class PlayerBoardTestSuite {
         PlayerBoard playerBoard = new PlayerBoard(12, e -> System.out.println("test"));
 
         //When
+        playerBoard.incShips();
+        playerBoard.incShips();
         playerBoard.reduceShips();
 
         //Then
-        Assert.assertEquals(7, playerBoard.getShipsCount());
+        Assert.assertEquals(1, playerBoard.getShipsCount());
     }
 }

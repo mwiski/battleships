@@ -5,9 +5,7 @@ import javafx.scene.input.MouseEvent;
 import pl.wiskim.battleships.gui.*;
 import pl.wiskim.battleships.messages.EndGameBox;
 import pl.wiskim.battleships.model.Ship;
-import pl.wiskim.battleships.model.ShipType;
 import pl.wiskim.battleships.model.Ships;
-import java.util.List;
 
 public class PlayerStrategy extends Strategy {
 
@@ -25,14 +23,14 @@ public class PlayerStrategy extends Strategy {
             return;
 
         Cell cell = (Cell) event.getSource();
-        List<ShipType> shipTypeList = Ships.SHIPS;
 
-        if (gui.getPlayerBoard().placeShip(new Ship(shipTypeList.get(shipCounter).getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
+        if (gui.getPlayerBoard().placeShip(new Ship(Ships.SHIPS.get(shipCounter).getSize(), event.getButton() == MouseButton.PRIMARY), cell.getXValue(), cell.getYValue())) {
             gui.setPlayerBoardActive(false);
+            gui.getPlayerBoard().incShips();
             shipCounter++;
             gui.setShipLabel();
 
-            if (shipCounter == shipTypeList.size()) {
+            if (shipCounter == Ships.SHIPS.size()) {
                 gui.getRoot().getChildren().removeAll(gui.getShipLabel(), gui.getInstruction());
                 gui.setEnemyBoardActive(true);
                 gui.setPlayerBoardActive(false);

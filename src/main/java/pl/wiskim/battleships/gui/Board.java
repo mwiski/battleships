@@ -16,7 +16,7 @@ public abstract class Board extends Parent {
 
     private VBox rows;
     private static final int BOARD_SIZE = 12;
-    private int shipsCount = Ships.SHIPS.size();
+    private int shipsCount = 0;
 
     Board(int size, EventHandler<? super MouseEvent> handler) {
         rows = new VBox();
@@ -114,5 +114,9 @@ public abstract class Board extends Parent {
 
     public void reduceShips() {
         shipsCount--;
+    }
+
+    public void incShips() {
+        shipsCount++;
     }
 }
