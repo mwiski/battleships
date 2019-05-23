@@ -14,7 +14,6 @@ import pl.wiskim.battleships.engine.GameLevelType;
 import pl.wiskim.battleships.model.Ships;
 import pl.wiskim.battleships.strategy.EnemyStrategy;
 import pl.wiskim.battleships.strategy.PlayerStrategy;
-
 import java.util.List;
 
 public class UserInterface {
@@ -136,10 +135,11 @@ public class UserInterface {
 
         List<String> shipsNames = Ships.SHIP_NAMES;
         if (playerStrategy.getShipCounter() < shipsNames.size()) {
-            getShipLabel().setText("Place your " + shipsNames.get(playerStrategy.getShipCounter()) + " ship");
+            getShipLabel().setText("Place your " + shipsNames.get(playerStrategy.getShipCounter()) + " ship.");
             setPlayerBoardActive(true);
         }
     }
+
     public void restart() {
         isEnemyBoardActive = false;
         isPlayerBoardActive = true;
@@ -209,5 +209,19 @@ public class UserInterface {
 
     public void incComputerScore() {
         computerScore++;
+    }
+
+    //Methods for test
+
+    public void setGameLevelType(GameLevelType gameLevelType) {
+        this.gameLevelType = gameLevelType;
+    }
+
+    int getPlayerScore() {
+        return playerScore;
+    }
+
+    int getComputerScore() {
+        return computerScore;
     }
 }

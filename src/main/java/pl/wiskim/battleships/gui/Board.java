@@ -7,8 +7,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import pl.wiskim.battleships.model.Ship;
-import pl.wiskim.battleships.model.Ships;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,5 +1,8 @@
 package pl.wiskim.battleships.strategy;
 
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import pl.wiskim.battleships.gui.*;
 import pl.wiskim.battleships.messages.EndGameBox;
 import pl.wiskim.battleships.model.Ship;
@@ -115,7 +118,7 @@ public class EnemyStrategy extends Strategy {
                 enemyTurn = false;
                 System.out.println("YOU LOSE");
                 gui.incComputerScore();
-                EndGameBox endGameBox = new EndGameBox();
+                EndGameBox endGameBox = new EndGameBox(new Stage(), new Label(), new VBox(10));
                 endGameBox.init("Game over", "Oh no! You have lost!\nWhat do you want to do next?");
                 endGameBox.renderContent(gui.getPrimaryStage(), gui);
             }
@@ -124,5 +127,27 @@ public class EnemyStrategy extends Strategy {
 
     void setEnemyTurn(boolean enemyTurn) {
         this.enemyTurn = enemyTurn;
+    }
+
+    //Methods for test
+    boolean isEnemyTurn() {
+        return enemyTurn;
+    }
+
+    boolean isShotContinue() {
+        return shotContinue;
+    }
+
+    void setShotContinueTrue() {
+        this.shotContinue = true;
+    }
+
+    void setShotContinueCells(Cell cell) {
+        shotContinueCells = new ArrayList<>();
+        shotContinueCells.add(cell);
+    }
+
+    Cell getShotContinueCell(int n) {
+        return shotContinueCells.get(n);
     }
 }

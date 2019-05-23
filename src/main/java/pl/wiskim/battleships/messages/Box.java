@@ -9,21 +9,24 @@ import pl.wiskim.battleships.gui.UserInterface;
 
 public abstract class Box {
 
-    Stage stage;
+    protected Stage stage;
     Label label;
     VBox layout;
 
+    public Box(Stage stage, Label label, VBox layout) {
+        this.stage = stage;
+        this.label = label;
+        this.layout = layout;
+    }
+
     public void init(String title, String message) {
-        stage = new Stage();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(title);
         stage.setMinWidth(350);
         stage.setMinHeight(250);
 
-        label = new Label();
         label.setText(message);
 
-        layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
     }
 

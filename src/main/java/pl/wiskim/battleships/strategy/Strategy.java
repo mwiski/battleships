@@ -1,6 +1,9 @@
 package pl.wiskim.battleships.strategy;
 
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import pl.wiskim.battleships.gui.Board;
 import pl.wiskim.battleships.gui.Cell;
 import pl.wiskim.battleships.gui.UserInterface;
@@ -24,7 +27,7 @@ public abstract class Strategy {
             cell.setFill(Color.RED);
             if (cell.getShip().isNotAlive()) {
                 reduceShips(board);
-                AlertBox alertBox = new AlertBox();
+                AlertBox alertBox = new AlertBox(new Stage(), new Label(), new VBox(10));
                 alertBox.init("Ship has sink", "Hit and sink!");
                 alertBox.renderContent(gui.getPrimaryStage(), gui);
             }

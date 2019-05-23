@@ -3,7 +3,7 @@ package pl.wiskim.battleships.model;
 import org.junit.*;
 import java.util.List;
 
-public class ShipsTestSuite {
+public class ShipsTest {
     @Test
     public void testListSHIPS() {
         //Given

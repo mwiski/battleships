@@ -1,7 +1,10 @@
 package pl.wiskim.battleships.strategy;
 
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import pl.wiskim.battleships.gui.*;
 import pl.wiskim.battleships.messages.EndGameBox;
 import pl.wiskim.battleships.model.Ship;
@@ -51,7 +54,7 @@ public class PlayerStrategy extends Strategy {
         if (gui.getEnemyBoard().getShipsCount() == 0) {
             System.out.println("YOU WIN");
             gui.incPlayerScore();
-            EndGameBox endGameBox = new EndGameBox();
+            EndGameBox endGameBox = new EndGameBox(new Stage(), new Label(), new VBox(10));
             endGameBox.init("End game", "Congratulations, you won!\nWhat do you want to do next?");
             endGameBox.renderContent(gui.getPrimaryStage(), gui);
         }
@@ -60,4 +63,11 @@ public class PlayerStrategy extends Strategy {
     public int getShipCounter() {
         return shipCounter;
     }
+
+    //Method used for test
+    public void setShipCounter(int n) {
+        shipCounter = n;
+    }
+
+
 }
