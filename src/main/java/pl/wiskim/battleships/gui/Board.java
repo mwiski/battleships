@@ -1,41 +1,120 @@
 package pl.wiskim.battleships.gui;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.Parent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import pl.wiskim.battleships.model.Ship;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Board {
+public abstract class Board extends Parent {
 
+    private VBox rows;
     private static final int BOARD_SIZE = 12;
+    private int shipsCount = 0;
 
-    private GridPane root;
-
-    public Board() {
-        Image ocean = new Image("file:C:\\Users\\Mat\\Documents\\Development\\Projects\\battleships\\src\\main\\resources\\graphics\\ocean.jpg");
-
-        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, true);
-        BackgroundImage oceanImage = new BackgroundImage(ocean, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        Background oceanBackground = new Background(oceanImage);
-
-        root = new GridPane();
-        root.setPadding(new Insets(10, 10, 10, 10));
-        root.setHgap(8);
-        root.setVgap(10);
-        root.setAlignment(Pos.CENTER);
-        root.setBackground(oceanBackground);
-        createGrid();
+    Board(int size, EventHandler<? super MouseEvent> handler) {
+        rows = new VBox();
+        for (int y = 0; y < size; y++) {
+            HBox row = new HBox();
+            for (int x = 0; x < size; x++) {
+                Cell c = new Cell(x, y);
+                c.setOnMouseClicked(handler);
+                row.getChildren().add(c);
+            }
+            rows.getChildren().add(row);
+        }
+        getChildren().add(rows);
     }
 
-    private void createGrid() {
-
-        PlayerBoard playerBoard = new PlayerBoard(BOARD_SIZE, e -> System.out.println("playerboard test"));
-        EnemyBoard enemyBoard = new EnemyBoard(BOARD_SIZE, e -> System.out.println("enemyboard test"));
-        HBox hbox = new HBox(50, playerBoard, enemyBoard);
-        root.getChildren().add(hbox);
+    public Cell getCell(int x, int y) {
+        return (Cell)((HBox)rows.getChildren().get(y)).getChildren().get(x);
     }
 
-    public Pane getRoot() {
-        return root;
+    public boolean placeShip(Ship ship, int x, int y) {
+        if (canPlaceShip(ship, x, y)) {
+            int length = ship.getSize();
+
+            if (ship.isVertical()) {
+                place(ship, y, x, 0, 1, length);
+            } else {
+                place(ship, x, y, 1, 0, length);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    abstract void place(Ship ship, int a, int b, int c, int d, int length);
+
+    public Cell[] getNeighbors(int x, int y) {
+        Point2D[] points = new Point2D[] {
+                new Point2D(x - 1, y),
+                new Point2D(x + 1, y),
+                new Point2D(x, y - 1),
+                new Point2D(x, y + 1)
+        };
+
+        List<Cell> neighbors = new ArrayList<>();
+
+        for (Point2D p : points) {
+            if (isValidPoint(p)) {
+                neighbors.add(getCell((int)p.getX(), (int)p.getY()));
+            }
+        }
+        return neighbors.toArray(new Cell[0]);
+    }
+
+    private boolean canPlaceShip(Ship ship, int x, int y) {
+        int length = ship.getSize();
+
+        if (ship.isVertical()) {
+            return checkPlacement(y, x, length, 0, 1);
+        } else {
+            return checkPlacement(x, y, length, 1, 0);
+        }
+    }
+
+    private boolean checkPlacement(int a, int b, int length, int c, int d) {
+        for (int i = a; i < a + length; i++) {
+            if (!isValidPoint(i * c + b * d, i * d + b * c))
+                return false;
+
+            Cell cell = getCell(i * c + b * d, i * d + b * c);
+            if (cell.getShip() != null)
+                return false;
+
+            for (Cell neighbor : getNeighbors(i * c + b * d, i * d + b * c)) {
+                if (!isValidPoint(i * c + b * d, i * d + b * c))
+                    return false;
+
+                if (neighbor.getShip() != null)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidPoint(Point2D point) {
+        return isValidPoint(point.getX(), point.getY());
+    }
+
+    private boolean isValidPoint(double x, double y) {
+        return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
+    }
+
+    public int getShipsCount() {
+        return shipsCount;
+    }
+
+    public void reduceShips() {
+        shipsCount--;
+    }
+
+    public void incShips() {
+        shipsCount++;
     }
 }

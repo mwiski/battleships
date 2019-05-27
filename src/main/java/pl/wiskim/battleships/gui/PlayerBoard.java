@@ -2,23 +2,23 @@ package pl.wiskim.battleships.gui;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.Parent;
+import javafx.scene.paint.Color;
+import pl.wiskim.battleships.model.Ship;
 
+public class PlayerBoard extends Board {
 
-public class PlayerBoard extends Parent {
+    private Color shipFillColor = Color.GREEN;
 
-    public PlayerBoard(int size, EventHandler<? super MouseEvent> handler) {
-        VBox rows = new VBox();
-        for (int y = 0; y < size; y++) {
-            HBox row = new HBox();
-            for (int x = 0; x < size; x++) {
-                Cell c = new Cell(x, y);
-                c.setOnMouseClicked(handler);
-                row.getChildren().add(c);
-            }
-            rows.getChildren().add(row);
+    PlayerBoard(int size, EventHandler<? super MouseEvent> handler) {
+        super(size, handler);
+    }
+
+    @Override
+    void place(Ship ship, int a, int b, int c, int d, int length) {
+        for (int i = a; i < a + length; i++) {
+            Cell cell = getCell(i * c + b * d, i * d + b * c);
+            cell.setShip(ship);
+            cell.setFill(shipFillColor);
         }
-        getChildren().add(rows);
     }
 }
